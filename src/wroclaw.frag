@@ -29,8 +29,9 @@ float noise(vec2 p) {
     return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
+const vec3 BACKGROUND_COLOR = vec3(0.1, 0.1, 0.1);
 // grid + blobs
-const vec3  FRONT_GRID_COLOR   = vec3(0.2, 0.2, 0.2);
+const vec3  FRONT_GRID_COLOR   = vec3(0.3, 0.3, 0.3);
 const float FRONT_LINE_WIDTH  = 4.5;
 const vec2  FRONT_GRID_SPACING = vec2(50.0, 50.0);
 const float FRONT_ANGLE_X_DEG = -60.0;
@@ -45,8 +46,8 @@ const vec3 FRONT_BLOB_COLOR_0 = vec3(1.0, 1.0, 0.0);
 const vec3 FRONT_BLOB_COLOR_1 = vec3(0.0, 0.5, 1.0);
 const vec3 FRONT_BLOB_COLOR_2 = vec3(1.0, 0.0, 0.0);
 
-const float STRAND_RADIUS_FRAC       = 0.25;
-const float STRAND_WIGGLE_FRAC       = 0.25;
+const float STRAND_RADIUS_FRAC       = 0.3;
+const float STRAND_WIGGLE_FRAC       = 0.2;
 const float STRAND_JITTER_FRAC       = 0.12;
 const float STRAND_VARIANCE_SCALE    = 16.0;
 const float STRAND_TONE_MIN          = 0.75;
@@ -116,10 +117,10 @@ void main() {
     float distToHorizontal = min(mod(uvY.y, FRONT_GRID_SPACING.y), FRONT_GRID_SPACING.y - mod(uvY.y, FRONT_GRID_SPACING.y));
     float gridLineMask = float(distToVertical < FRONT_LINE_WIDTH || distToHorizontal < FRONT_LINE_WIDTH);
 
-    vec3 color = vec3(0.5, 0.5, 0.5);
+    vec3 color = vec3(0.6, 0.6, 0.6);
     color += FRONT_GRID_COLOR * gridLineMask;
 
-    float cellScale = 100.0; // adjust to make circles larger or smaller (cells per axis)
+    float cellScale = 110.0; // adjust to make circles larger or smaller (cells per axis)
     float sMask = strandMask(uv / u_resolution, cellScale);
 
     for (int i = 0; i < FRONT_NUM_BLOBS; i++) {
@@ -137,6 +138,6 @@ void main() {
         color = mix(color, blobColor, mask * gridLineMask);
     }
 
-    color *= sMask;
+    color = mix(BACKGROUND_COLOR, color, sMask);
     gl_FragColor = vec4(color, 1.0);
 }
